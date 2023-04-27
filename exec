@@ -1,0 +1,20 @@
+#!/bin/bash
+# DRAK
+# IMPORTANT!: There is a discrepancy between DOS and UNIX carriage return (\r). This script must be UNIX encoded. e.g. Notepad++: Edit>EOL Conversion>Unix (LF)
+
+echo "*****************************"
+echo "** YOU ARE INSIDE: exec.sh"
+echo "** USER: " $(whoami)
+echo "** PWD: " $(pwd)
+echo "** LS: " $(ls)
+echo "** GPU AVAILABLE: " $(python3 -c 'import torch; print(torch.cuda.is_available())')
+echo "*****************************"
+
+# EXECUTE WHATEVER YOU WISH
+service dbus start
+service bluetooth start
+
+python3 code/main.py
+
+# PREVENT DOCKER FROM EXITING
+tail -f /dev/null

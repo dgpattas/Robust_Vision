@@ -1,0 +1,15 @@
+# Usage: pip install -r requirements.txt 
+matplotlib >= 3.2.2
+numpy >= 1.18.5
+Pillow >= 7.1.2
+scikit-image >= 0.16.2
+opencv-python >= 4.5.3
+--find-links https://download.pytorch.org/whl/torch/
+torch==1.12.1+cu113             # GPU enabled device
+# torch==1.12.1+cpu             # CPU only device
+--find-links https://download.pytorch.org/whl/torchvision/
+torchvision == 0.13.1+cu113     # GPU enabled device
+# torchvision == 0.13.1+cpu     # CPU only device
+--find-links https://download.pytorch.org/whl/torchaudio/
+torchaudio == 0.12.1+cu113      # GPU enabled device
+# torchaudio == 0.12.1+cpu      # CPU only device
