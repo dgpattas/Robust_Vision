@@ -57,8 +57,25 @@ def main(vidcap,denoise,detect,device,depth_model):
             # elif(os.environ['detect'] == 'clothes'):
             #     det = getDetectionsClothes(image,detect[2])
             # det = {"detect": det}
+        det = convert_detections_CS(det)
         # This function publishes the detections
         mqttConn(det,ToolName,PublishingTopic,ToolID,client)
+
+def convert_detections_CS(det):
+    new_det = []
+    positionWeight = 110
+    scaleWeight = 500
+    for detection in det:
+        if "depth" in detection:
+            pos_z = detection["depth"]
+        else:
+            pos_z = 4
+        pos_x = ((detection["relative_x_center"]-(640/2))/positionWeight)*pos_z/4
+        width = detection["box_width"]/scaleWeight
+        height = detection["box_height"]/scaleWeight
+        pos_y = ((-1)*(detection["relative_y_center"]- (480/2))/positionWeight)*pos_z/4
+        new_det.append({"label_Id": detection["label_Id"], "pos_x": pos_x, "pos_y": pos_y, "pos_z": pos_z, "width": width, "height": height, "confidence": detection["confidence"]})
+    return new_det
 
 
 def inverse_depth_norm(depth):
