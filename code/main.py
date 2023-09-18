@@ -95,8 +95,8 @@ def get_bounding_box():
 
 
 def connect_to_gopro():
-    # gopro = GoPro()
-    # gopro.open()
+    gopro = GoPro()
+    gopro.open()
     goprocamera = GoProCamera.GoPro(constants.gpcontrol)
     goprocamera.video_settings(res='1080p', fps='15')
     goprocamera.gpControlSet(constants.Stream.WINDOW_SIZE, constants.Stream.WindowSize.R720)

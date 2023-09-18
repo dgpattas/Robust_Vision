@@ -24,7 +24,7 @@ def main(vidcap,denoise,detect,device,depth_model):
     #Connect to mqtt
     transformss = transforms.ToPILImage()
     use_mqtt = True
-    ToolName,PublishingTopic,ToolID,client = mqttConnect(use_mqtt)
+    sourceid,PublishingTopic,ToolID,client = mqttConnect(use_mqtt)
     count = 0
     
     while True:
@@ -59,7 +59,7 @@ def main(vidcap,denoise,detect,device,depth_model):
             # det = {"detect": det}
         det = convert_detections_CS(det)
         # This function publishes the detections
-        mqttConn(det,ToolName,PublishingTopic,ToolID,client)
+        mqttConn(det,sourceid,PublishingTopic,ToolID,client)
 
 def convert_detections_CS(det):
     new_det = []
@@ -135,37 +135,27 @@ def getDetectionsClothes(image,detect):
 
 def mqttConnect(use_mqtt):
     if use_mqtt:
-        ToolName = 'Robust vision'
         ToolID = 'SENSE-VISION'
+        sourceid = "FR001#FR"
         BrokerIP= os.environ['ip'] #'localhost' #.
         PublishingTopic= 'fromtool-'+ ToolID.lower()         
         client = mqtt.Client(ToolID)
         client.connect(BrokerIP)
-        return ToolName,PublishingTopic,ToolID,client
+        return sourceid,PublishingTopic,ToolID,client
 
-def mqttConn(msg,ToolName,PublishingTopic,ToolID,client) -> None:
+def mqttConn(msg,sourceid,PublishingTopic,ToolID,client) -> None:
     json_msg= {}
-    json_msg['toolName'] = ToolName
+    json_msg['sourceID'] = sourceid
     json_msg['toolID'] = ToolID
     json_msg['broadcast'] = True  
+
     json_data = {}
-    json_data['category'] = "RobustVision#VisualDetections"
+    json_data['category'] = "RobustVision#VisualDetections3D"
+    json_data['type'] = "Prediction"
     json_data['startTS'] = datetime.datetime.now().isoformat()
 
-    json_source = {}
-    json_source['extID'] = 'RV_01'
-    json_source['frID'] = 'FR004'
-    json_source['deviceSourceType'] = 'RobustVision'
 
-    json_indata={}
-    json_indata['type'] = 'Prediction'
-    json_indata['creationTS'] = datetime.datetime.now().isoformat()
-    json_indata['source'] = json_source
-
-    #json_tooldata={}
-    json_indata['toolData'] = msg
-    json_includedData = [json_indata]
-    json_data['toolPayload'] = json_includedData
+    json_data['toolData'] = msg
     json_msg['infoprioPayload'] = json_data  
     json_msg_pub = json.dumps(json_msg) 
 
