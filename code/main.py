@@ -91,7 +91,7 @@ def get_bounding_box():
     msg = subscribe.simple('fromtool-sense-vision', hostname=os.environ['ip'])
     myGlobalMessagePayload  = msg.payload.decode()
     data = json.loads(myGlobalMessagePayload)
-    return data['infoprioPayload']['toolPayload'][0]
+    return data['infoprioPayload']
 
 
 def connect_to_gopro():
@@ -109,27 +109,27 @@ def connect_to_gopro():
 
 if __name__ == "__main__":
 
-    # # Care values must all be strings
+    # Care values must all be strings
 
-    # # Denoise flag "0" no denoising , "1" denoising
-    # os.environ['denoise_flag'] = "0"
+    # Denoise flag "0" no denoising , "1" denoising
+    os.environ['denoise_flag'] = "0"
 
-    # # Denoise models, Options are "lowlight" , "dehaze" , "derain" 
-    # os.environ['denoise'] = "lowlight"
-
-
-    # # Detection flag 0 no detections , 1 detections
-    # os.environ["detect_flag"] = "1"
-
-    # # What detection to use, Options are "yolo" , "foot" , "clothes"
-    # os.environ["detect"] = "yolo"
-
-    # # Depth flag, Only works with "yolo"
-    # os.environ["3d_flag"] = "1"
+    # Denoise models, Options are "lowlight" , "dehaze" , "derain" 
+    os.environ['denoise'] = "lowlight"
 
 
-    # # ip of broker
-    # os.environ['ip'] = "127.0.0.1"
+    # Detection flag 0 no detections , 1 detections
+    os.environ["detect_flag"] = "1"
+
+    # What detection to use, Options are "yolo" , "foot" , "clothes"
+    os.environ["detect"] = "yolo"
+
+    # Depth flag, Only works with "yolo"
+    os.environ["3d_flag"] = "1"
+
+
+    # ip of broker
+    os.environ['ip'] = "127.0.0.1"
 
 
     #Establish camera Connections
