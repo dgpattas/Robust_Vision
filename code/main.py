@@ -16,12 +16,13 @@ from network import DRN
 import paho.mqtt.client as mqtt
 import paho.mqtt.subscribe as subscribe
 import json
-from mobvit_small import EncoderDecoder
+#from mobvit_small import EncoderDecoder
 from pipeline_delivering.pipeline import load_model
 import read_and_detect_deep_learning
 import body, read_frames
 from ultralytics import YOLO
-
+from simple_model_depthwise import EncoderDecoder as depthencdec
+from dehaze_lightweight import EncoderDecoder as dehazeencdec
 
 
 app = FastAPI()
@@ -56,20 +57,47 @@ def change():
     os.environ["3d_flag"] = "0"
     return 
 
-@app.get("/clothes")
+@app.get("/clothes_on")
 def change():
-    os.environ["detect"] = "clothes"
+    os.environ["clothes"] = "1"
     return 
 
-@app.get("/foot")
+@app.get("/clothes_off")
 def change():
-    os.environ["detect"] = "foot"
+    os.environ["clothes"] = '0'
     return 
 
-@app.get("/yolo")
+
+@app.get("/footprints_on")
 def change():
-    os.environ["detect"] = "yolo"
+    os.environ["footprint"] = "1"
     return 
+
+@app.get('/footprints_off')
+def change():
+    os.environ['footprint'] ='0'
+    return 
+
+
+@app.get("/yolov8_on")
+def change():
+    os.environ["yolov8"] = "1"
+    return 
+
+@app.get('/yolov8_off')
+def change():
+    os.environ['yolov8'] = '0'
+    return 
+
+@app.get("/yolovperson_on")
+def change():
+    os.environ["yolovperson"] = "1"
+    return 
+
+@app.get('/yolovperson_off')
+def change():
+    os.environ['yolovperson'] = '0'
+    return
 
 @app.get("/dehaze")
 def change():
@@ -95,91 +123,167 @@ def get_bounding_box():
 
 
 def connect_to_gopro():
-    # gopro = GoPro()
-    # gopro.open()
-    goprocamera = GoProCamera.GoPro(constants.gpcontrol)
-    goprocamera.video_settings(res='1080p', fps='15')
-    goprocamera.gpControlSet(constants.Stream.WINDOW_SIZE, constants.Stream.WindowSize.R720)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#     gopro = GoPro()
+    # #gopro.open()
+    goprocamera = GoProCamera.GoPro(constants.gpcontrol, ip_address="10.5.5.9")
+    # goprocamera.video_settings(res='1080', fps='15')
+    # goprocamera.gpControlSet(constants.Stream.WINDOW_SIZE, constants.Stream.WindowSize.R720)
+    # goprocamera.gpControlSet(constants.Stream.BIT_RATE, constants.Stream.BitRate.B4Mbps)
+    # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # #goprocamera.stream()
+    
+
+
     goprocamera.livestream("start")
-    #Comment lines 89-91 in KeepAlive
-    #Change Line 96 to sock.sendto(keep_alive_payload, ("10.5.5.9", 8554))
+    
+    
+    # #Comment lines 89-91 in KeepAlive
+    # #Change Line 96 to sock.sendto(keep_alive_payload, ("10.5.5.9", 8554))
+    
+    
     Thread(target=GoProCamera.GoPro.KeepAlive, args=(goprocamera,), daemon=True).start()
+
+
+import threading, queue
+class VideoCapture:
+    def __init__(self,ip):
+        self.cap = cv2.VideoCapture(ip,cv2.CAP_FFMPEG)
+        self.q = queue.Queue()
+        t = threading.Thread(target=self._reader)
+        t.daemon = True
+        t.start()
+    def _reader(self):
+        while True:
+            ret,frame = self.cap.read()
+            if not ret:
+                break
+            if not self.q.empty():
+                try:
+                    self.q.get_nowait()
+                except queue.Empty:
+                    pass
+            self.q.put(frame)
+    def read(self):
+        return self.q.get()
 
 
 if __name__ == "__main__":
 
-    # Care values must all be strings
+    # # Care values must all be strings
 
-    # Denoise flag "0" no denoising , "1" denoising
-    os.environ['denoise_flag'] = "0"
+    # # Denoise flag "0" no denoising , "1" denoising
+    # os.environ['denoise_flag'] = "1"
 
-    # Denoise models, Options are "lowlight" , "dehaze" , "derain" 
-    os.environ['denoise'] = "lowlight"
+    # # Denoise models, Options are "lowlight" , "dehaze" , "derain" 
+    # #os.environ['denoise'] = "lowlight"
+    # os.environ['denoise'] = ''
+
+    # # Detection flag 0 no detections , 1 detections
+    # os.environ["detect_flag"] = "1"
+
+    # # Depth flag
+    # os.environ["3d_flag"] = "1"
+
+    # # Detection flag for yolo
+    # os.environ["yolov8"] = '1'
+
+    # # Detection flag for tiny people
+    # os.environ["yolovperson"] = '1'
+
+    # # Detection flag for footprints & potholes
+    # os.environ['footprint'] = '1'
+
+    # # Detection flag for clothes
+    # os.environ['clothes'] = '1'
 
 
-    # Detection flag 0 no detections , 1 detections
-    os.environ["detect_flag"] = "1"
+    # # ip of broker
+    # os.environ['ip'] = "127.0.0.1"
 
-    # What detection to use, Options are "yolo" , "foot" , "clothes"
-    os.environ["detect"] = "yolo"
-
-    # Depth flag, Only works with "yolo"
-    os.environ["3d_flag"] = "1"
-
-
-    # ip of broker
-    os.environ['ip'] = "127.0.0.1"
-
+    #ip gopro
+    # os.environ['ip_gopro'] = "udp://127.0.0.1:8554"
+    
 
     #Establish camera Connections
     connect_to_gopro()
 
     #Start gopro streaming
-    local_url = "udp://127.0.0.1:8554"
-    vidcap = cv2.VideoCapture(local_url, cv2.CAP_FFMPEG)
+    # local_url = "udp://127.0.0.1:8554"
+    # vidcap = cv2.VideoCapture(os.environ['ip_gopro'], cv2.CAP_FFMPEG)
+    # vidcap = cv2.VideoCapture(int(os.environ['ip_gopro']))
+    # Thread(target=read_frames.main, args=(vidcap,)).start()
+    vidcap = VideoCapture(os.environ['ip_gopro'])
+    
     
     #Load Models
     device = torch.device("cuda:" + str(0) if (torch.cuda.is_available() and int(0) >= 0) else "cpu")
     denoise_model = []
     detect_model = []
 
+    # old dehaze model
+    # #Dehaze
+    # path = "./code/weights_dehazing/17_model_G.pth"
+    # #Change on line 24 with [0] so it returns only the image without the depthmap
+    # denoise_model.append(DehazingModel(path, use_attention=True, ngf=32).to(device))
 
-    #Dehaze
-    path = "./code/weights_dehazing/17_model_G.pth"
-    #Change on line 24 with [0] so it returns only the image without the depthmap
-    denoise_model.append(DehazingModel(path, use_attention=True, ngf=32).to(device))
+
+    
+    # new dehaze model
+    path = './code/new_dehaze_weights/lightweight_perloss_bigger_res_nopre'
+    dehaze_model = dehazeencdec(batch_size=1)
+    dehaze_model.cuda()
+    if os.path.exists(path):
+        dehaze_model.load_state_dict(torch.load(path))
+    dehaze_model.eval()
+    denoise_model.append(dehaze_model)
+
+
 
     #Derain
     derain_model = DRN(channel=3, inter_iter=3, intra_iter=3, a_S=0.5, use_GPU=True)
     derain_model = derain_model.cuda()
-    #Comment on line 189
+    # Comment on line 189
     derain_model.load_state_dict(torch.load("./code/weights_derain/net_latest.pth"))
     denoise_model.append(derain_model.eval())
 
-    #LowLight
-    model_root = './code/SCI/weights'
-    gpu_id = 0
-    # degree of correction
-    # if both are null only Local Scale Histogram Stretch is applied
-    ue_degree = 'maximum'
-    oe_degree = 'easy'
-    # output = pipeline(image = image, gpu_id = gpu_id, model_root =  model_root, wb = False, ue_degree = ue_degree, oe_degree = oe_degree)
-    model_uexp, model_oexp = load_model(model_root, gpu_id, ue_degree, oe_degree)
-    denoise_model.append([model_uexp, model_oexp])
-    ### Old ###
+    # #LowLight
+    # model_root = './code/SCI/weights'
+    # gpu_id = 0
+    # # degree of correction
+    # # if both are null only Local Scale Histogram Stretch is applied
+    # ue_degree = 'maximum'
+    # oe_degree = 'easy'
+    # # output = pipeline(image = image, gpu_id = gpu_id, model_root =  model_root, wb = False, ue_degree = ue_degree, oe_degree = oe_degree)
+    # model_uexp, model_oexp = load_model(model_root, gpu_id, ue_degree, oe_degree)
+    # denoise_model.append([model_uexp, model_oexp])
+    # ### Old ###
     # path = "./code/weights_lowlight/weights_latest.pt"
     # #comment on line 158
     # denoise_model = Finetunemodel(path).to(device)
 
     #Yolo
     # For yolo, common.py line 563 classes
-    detect_model.append(torch.hub.load("./code/yolov5-master", 'custom', 
-        path="./code/yolov5s.pt", source="local")) #'yolov5s', pretrained=True) #, trust_repo=True
+    #detect_model.append(torch.hub.load("./code/yolov5-master", 'custom', 
+    #    path="./code/yolov5s.pt", source="local")) #'yolov5s', pretrained=True) #, trust_repo=True
+
+    #YOLOV8
+    detect_model.append(YOLO('./code/yolosmall/yolov8s.pt'))
     
     # UPM's holes and footprints detection
-    detect_model.append(YOLO("./code/upm_detect_model/pothole_footprints.pt"))
+    detect_model.append(YOLO("./code/upm_detect_model/potholes_footprints_new.pt"))
 
+    #YOLOV8_far_distance_persons
+    detect_model.append(YOLO('./code/yolopersons/yolo_person.pt'))
+
+    #clothes
+    detect_model.append(YOLO('./code/upm_detect_model/clothing.pt'))
+    
+
+    
+    
+    
+
+    
     # # UPM's clothes detector
     # num_classes = 45
     # detect_model_clothes = read_and_detect_deep_learning.get_model(num_classes)
@@ -187,20 +291,39 @@ if __name__ == "__main__":
     # # load the modle on to the computation device and set to eval mode
     # detect_model.append(detect_model_clothes.to(device).eval())
 
-    ### Depth
-    depth_model = EncoderDecoder(batch_size=1)
+    # old depth model
+    # ### Depth
+    # depth_model = EncoderDecoder(batch_size=1)
+    # depth_model.cuda()
+    # depth_model.load_state_dict(torch.load('./code/weights_depth/mobilenet_small_MSE_l2=0.0001_bsize=8.pth'))
+    # depth_model.eval()
+
+
+    # new depth model
+    depth_model = depthencdec(batch_size=1)
     depth_model.cuda()
-    depth_model.load_state_dict(torch.load('./code/weights_depth/mobilenet_small_MSE_l2=0.0001_bsize=8.pth'))
+    path = './code/new_depth_weights/lightweight_model1.pth'
+    if os.path.exists(path):
+        depth_model.load_state_dict(torch.load(path))
     depth_model.eval()
+
+    
+
 
     # Connect to broker
     client = mqtt.Client('fromtool-sense-vision')
+    
+    ####FOR DELETE JUST FOR DEBUGGING
+    os.environ['ip']='127.0.0.1'
+    ####
+
     client.connect(os.environ['ip'])
 
     #Start separate thread for pipeline
     # Denoise 0:dehaze 1:derain 2:lowlight
     # Detection 0:yolo 1:holes+footprint 2:sclothes
-    Thread(target=read_frames.main, args=(vidcap,)).start()
+    
+
     Thread(target=body.main, args=(vidcap,denoise_model,detect_model,device,depth_model)).start()
     # body.main(vidcap,denoise_model,detect_model,device)
 

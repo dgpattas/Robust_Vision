@@ -1,7 +1,7 @@
 # DRAK
 
 # INHERIT FROM BASE IMAGE
-FROM nvcr.io/nvidia/cuda:11.6.0-cudnn8-devel-ubuntu20.04
+FROM nvcr.io/nvidia/cuda:11.7.0-cudnn8-devel-ubuntu20.04
 
 # INSTALL PYTHON AND PIP
 ENV DEBIAN_FRONTEND=noninteractive
@@ -34,12 +34,18 @@ RUN pip install pillow
 RUN pip install argparse
 RUN pip install opencv-python
 RUN pip install plyfile
-RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
+#RUN pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+
 RUN pip install fastapi[all]
 RUN pip install configargparse
 
 RUN apt-get update && apt-get install -y sudo
+RUN sudo apt-get -y install python3.10-tk
 RUN sudo pip install scikit-image
+
+
+
 RUN pip install ultralytics
 
 RUN pip install einops
@@ -53,7 +59,7 @@ ADD code /code
 RUN mkdir -p -v root/.cache/torch/hub/checkpoints
 COPY code/weights_depth/mobilevit_xs-8fbd6366.pth root/.cache/torch/hub/checkpoints/mobilevit_xs-8fbd6366.pth
 COPY code/weights_depth/mobilenet_small_MSE_l2=0.0001_bsize=8.pth root/.cache/torch/hub/checkpoints/mobilenet_small_MSE_l2=0.0001_bsize=8.pth
-
+COPY code/weights_depth/vgg19-dcbb9e9d.pth root/.cache/torch/hub/checkpoints/vgg19-dcbb9e9d.pth
 
 
 # PORT-FORWARDING

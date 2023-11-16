@@ -12,12 +12,13 @@ def main(vidcap):
     client.connect(BrokerIP)
     # return ToolName,PublishingTopic,ToolID,client
 
-    skip_steps = 1
+    skip_steps = 7
     count = 0
 
     while True:
         count += 1 
         success, image = vidcap.read()
+        # print(image.shape)
         if success and count % skip_steps == 0:
             # Shoudl be converted to RGB
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

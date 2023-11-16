@@ -1,1 +1,1 @@
-openvpn3 session-start --config "./vpn/certh_vpn1_03.ovpn"
+openvpn3 session-start --config "./vpn/laptop_vpn1_01.ovpn"

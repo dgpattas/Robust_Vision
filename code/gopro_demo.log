@@ -1,0 +1,211 @@
+   MainThread:10:53:38.775 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S echo "VALID PASSWORD"
+   MainThread:10:53:38.793 util.py                                   304 DEBUG    | Receive response --> VALID PASSWORD
+
+   MainThread:10:53:38.794 util.py                                   296 DEBUG    | Send cmd --> nmcli --version
+   MainThread:10:53:38.799 util.py                                   304 DEBUG    | Receive response --> nmcli tool, version 1.22.10
+
+   MainThread:10:53:38.800 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli dev
+   MainThread:10:53:38.819 util.py                                   304 DEBUG    | Receive response --> DEVICE           TYPE      STATE      CONNECTION         
+enp0s31f6        ethernet  connected  Wired connection 1 
+docker0          bridge    connected  docker0            
+wlx08beac30bb38  wifi      connected  GP26182134 1       
+wlx38a38c200b6c  wifi      connected  GP26182134         
+lo               loopback  unmanaged  --                 
+
+   MainThread:10:53:38.819 wireless.py                                70 DEBUG    | Wifi setup. Using [Wireless] driver::[wlx08beac30bb38] interface
+         data:10:53:38.823 bleak_wrapper.py                          151 INFO     | Scanning for GoPro [A-Z0-9]{4} bluetooth devices...
+         data:10:53:43.877 bleak_wrapper.py                          178 INFO     | 	Discovered: GoPro 2134
+         data:10:53:43.879 bleak_wrapper.py                          184 INFO     | Found 1 matching devices.
+   MainThread:10:53:43.880 client.py                                 106 INFO     | Establishing the BLE connection
+         data:10:53:43.882 bleak_wrapper.py                          227 INFO     | Establishing BLE connection to E0:E8:98:AD:56:88: GoPro 2134...
+   MainThread:10:53:46.416 bleak_wrapper.py                          267 WARNING  | Connection failed during establishment..
+   MainThread:10:53:46.418 client.py                                 112 WARNING  | Failed to connect. Retrying #1
+         data:10:53:46.419 bleak_wrapper.py                          227 INFO     | Establishing BLE connection to E0:E8:98:AD:56:88: GoPro 2134...
+         data:10:53:48.665 bleak_wrapper.py                          342 INFO     | Discovering characteristics...
+         data:10:53:49.988 bleak_wrapper.py                          388 INFO     | Done discovering characteristics!
+         data:10:53:49.990 bleak_wrapper.py                          302 INFO     | Enabling notifications...
+         data:10:53:51.113 bleak_wrapper.py                          308 INFO     | Done enabling notifications
+   MainThread:10:53:51.114 builders.py                                89 INFO     | 
+
+<<<<<<<<--------------
+	register_value_update : StatusId.ENCODING
+<<<<<<<<--------------
+
+   MainThread:10:53:51.117 gopro.py                                  680 DEBUG    | Writing to [Query] UUID: 02:53:0a
+         data:10:53:51.203 gopro.py                                  587 DEBUG    | Received response on BleUUID [Query Response]: 05:53:00:0a:01:00
+   MainThread:10:53:51.204 builders.py                                91 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Query Response::QueryCmdId.REG_STATUS_VAL_UPDATE",
+    "StatusId.ENCODING": false
+-------------->>>>>>>>
+
+   MainThread:10:53:51.218 builders.py                                89 INFO     | 
+
+<<<<<<<<--------------
+	register_value_update : StatusId.SYSTEM_READY
+<<<<<<<<--------------
+
+   MainThread:10:53:51.221 gopro.py                                  680 DEBUG    | Writing to [Query] UUID: 02:53:52
+         data:10:53:51.293 gopro.py                                  587 DEBUG    | Received response on BleUUID [Query Response]: 05:53:00:52:01:01
+   MainThread:10:53:51.294 builders.py                                91 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Query Response::QueryCmdId.REG_STATUS_VAL_UPDATE",
+    "StatusId.SYSTEM_READY": true
+-------------->>>>>>>>
+
+   keep_alive:10:53:51.296 builders.py                               565 INFO     | 
+
+<<<<<<<<--------------
+	Set LED : "LED.BLE_KEEP_ALIVE"
+<<<<<<<<--------------
+
+   MainThread:10:53:51.296 gopro.py                                  535 INFO     | BLE is ready!
+   keep_alive:10:53:51.297 gopro.py                                  680 DEBUG    | Writing to [Settings] UUID: 03:5b:01:42
+   MainThread:10:53:51.298 builders.py                               321 INFO     | 
+
+<<<<<<<<--------------
+	GET_THIRD_PARTY_API_VERSION
+<<<<<<<<--------------
+
+         data:10:53:51.474 gopro.py                                  587 DEBUG    | Received response on BleUUID [Settings Response]: 02:5b:00
+   keep_alive:10:53:51.474 builders.py                               577 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Settings Response::SettingId.LED"
+-------------->>>>>>>>
+
+   MainThread:10:53:51.474 gopro.py                                  680 DEBUG    | Writing to [Command] UUID: 01:51
+         data:10:53:51.563 gopro.py                                  587 DEBUG    | Received response on BleUUID [Command Response]: 06:51:00:01:02:01:00
+   MainThread:10:53:51.564 builders.py                               328 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Command Response::CmdId.GET_THIRD_PARTY_API_VERSION",
+    "major": 2,
+    "minor": 0
+-------------->>>>>>>>
+
+   MainThread:10:53:51.566 gopro.py                                  370 INFO     | Using Open GoPro API version 2.0
+   MainThread:10:53:51.567 gopro.py                                  732 INFO     | Discovering Wifi AP info and enabling via BLE
+   MainThread:10:53:51.568 builders.py                               291 INFO     | 
+
+<<<<<<<<--------------
+	Wifi AP Password
+<<<<<<<<--------------
+
+   MainThread:10:53:51.698 gopro.py                                  721 DEBUG    | Reading from Wifi AP Password
+   MainThread:10:53:51.699 builders.py                               293 INFO     | 
+
+-------------->>>>>>>>
+Wifi AP Password : {
+    "status": "SUCCESS",
+    "id": "Wifi AP Password",
+    "password": "Jsf-4!Y-7@G"
+-------------->>>>>>>>
+
+   MainThread:10:53:51.702 builders.py                               291 INFO     | 
+
+<<<<<<<<--------------
+	Wifi AP SSID
+<<<<<<<<--------------
+
+   MainThread:10:53:51.833 gopro.py                                  721 DEBUG    | Reading from Wifi AP SSID
+   MainThread:10:53:51.834 builders.py                               293 INFO     | 
+
+-------------->>>>>>>>
+Wifi AP SSID : {
+    "status": "SUCCESS",
+    "id": "Wifi AP SSID",
+    "ssid": "GP26182134"
+-------------->>>>>>>>
+
+   MainThread:10:53:51.836 builders.py                               357 INFO     | 
+
+<<<<<<<<--------------
+	SET_WIFI : "True"
+<<<<<<<<--------------
+
+   MainThread:10:53:51.838 gopro.py                                  680 DEBUG    | Writing to [Command] UUID: 03:17:01:01
+         data:10:53:52.058 gopro.py                                  587 DEBUG    | Received response on BleUUID [Command Response]: 02:17:00
+   MainThread:10:53:52.059 builders.py                               369 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Command Response::CmdId.SET_WIFI"
+-------------->>>>>>>>
+
+         data:10:53:52.061 gopro.py                                  587 DEBUG    | Received response on BleUUID [Query Response]: 08:93:00:0a:01:00:52:01:01
+   MainThread:10:53:52.061 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli dev wifi list --rescan yes
+         data:10:53:52.061 gopro.py                                  612 INFO     | 
+
+----ASYNC----->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Query Response::QueryCmdId.STATUS_VAL_PUSH",
+    "StatusId.ENCODING": false,
+    "StatusId.SYSTEM_READY": true
+----ASYNC----->>>>>>>>
+
+   MainThread:10:53:56.908 util.py                                   304 DEBUG    | Receive response --> IN-USE  BSSID              SSID                             MODE   CHAN  RATE        SIGNAL  BARS  SECURITY  
+*       26:74:F7:9D:63:57  GP26182134                       Infra  6     65 Mbit/s   100     ▂▄▆█  WPA2      
+        F0:B4:D2:7B:AF:5D  CPERI                            Infra  6     540 Mbit/s  90      ▂▄▆█  WPA1 WPA2 
+        AC:8B:A9:48:1F:7E  WLAN-ITI                         Infra  11    270 Mbit/s  90      ▂▄▆█  WPA2      
+        98:48:27:DD:3E:A3  ITI-687 8119                     Infra  1     270 Mbit/s  74      ▂▄▆_  WPA2      
+        80:2A:A8:97:6A:FE  WLAN-ITI3                        Infra  1     405 Mbit/s  64      ▂▄▆_  WPA2      
+        06:0E:3C:FA:A8:95  DIRECT-95-HP OfficeJet Pro 7740  Infra  6     65 Mbit/s   59      ▂▄▆_  WPA2      
+
+IN-USE  BSSID              SSID                             MODE   CHAN  RATE        SIGNAL  BARS  SECURITY  
+*       26:74:F7:9D:63:57  GP26182134                       Infra  6     65 Mbit/s   97      ▂▄▆█  WPA2      
+        F0:B4:D2:7B:AF:5D  CPERI                            Infra  6     540 Mbit/s  84      ▂▄▆█  WPA1 WPA2 
+        AC:8B:A9:48:1F:7E  WLAN-ITI                         Infra  11    270 Mbit/s  67      ▂▄▆_  WPA2      
+        98:48:27:DD:3E:A3  ITI-687 8119                     Infra  1     270 Mbit/s  65      ▂▄▆_  WPA2      
+        AC:8B:A9:4B:7F:5A  WLAN-ITI2                        Infra  1     270 Mbit/s  64      ▂▄▆_  WPA2      
+        06:0E:3C:FA:A8:95  DIRECT-95-HP OfficeJet Pro 7740  Infra  6     65 Mbit/s   52      ▂▄__  WPA2      
+
+   MainThread:10:53:56.908 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli dev wifi connect "GP26182134" password "Jsf-4!Y-7@G" ifname "wlx08beac30bb38"
+   MainThread:10:53:58.163 util.py                                   304 DEBUG    | Receive response --> [2KDevice 'wlx08beac30bb38' successfully activated with 'aae77dbb-01a8-41ce-b14a-d9f63352e5b2'.
+
+   MainThread:10:53:58.163 builders.py                               837 INFO     | 
+
+<<<<<<<<--------------
+	gopro/camera/keep_alive
+<<<<<<<<--------------
+
+   MainThread:10:53:58.164 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli con | grep "wlx08beac30bb38"
+   MainThread:10:53:58.185 util.py                                   304 DEBUG    | Receive response --> GP26182134 1        aae77dbb-01a8-41ce-b14a-d9f63352e5b2  wifi      wlx08beac30bb38 
+
+   MainThread:10:53:58.186 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli con | grep "wlx08beac30bb38"
+   MainThread:10:53:58.204 util.py                                   304 DEBUG    | Receive response --> GP26182134 1        aae77dbb-01a8-41ce-b14a-d9f63352e5b2  wifi      wlx08beac30bb38 
+
+   MainThread:10:53:58.204 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli con | grep "wlx08beac30bb38"
+   MainThread:10:53:58.222 util.py                                   304 DEBUG    | Receive response --> GP26182134 1        aae77dbb-01a8-41ce-b14a-d9f63352e5b2  wifi      wlx08beac30bb38 
+
+   MainThread:10:53:58.223 gopro.py                                  765 DEBUG    | Sending:  http://10.5.5.9:8080/gopro/camera/keep_alive
+   MainThread:10:53:58.269 builders.py                               841 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "gopro/camera/keep_alive"
+-------------->>>>>>>>
+
+   keep_alive:10:54:51.534 builders.py                               565 INFO     | 
+
+<<<<<<<<--------------
+	Set LED : "LED.BLE_KEEP_ALIVE"
+<<<<<<<<--------------
+
+   keep_alive:10:54:51.534 gopro.py                                  680 DEBUG    | Writing to [Settings] UUID: 03:5b:01:42
+         data:10:54:51.639 gopro.py                                  587 DEBUG    | Received response on BleUUID [Settings Response]: 02:5b:00
+   keep_alive:10:54:51.640 builders.py                               577 INFO     | 
+
+-------------->>>>>>>>
+    "status": "SUCCESS",
+    "id": "Settings Response::SettingId.LED"
+-------------->>>>>>>>
+
+   MainThread:10:55:31.733 client.py                                 130 INFO     | Terminating the BLE connection
+         data:10:55:31.734 bleak_wrapper.py                          408 INFO     | Device disconnected!

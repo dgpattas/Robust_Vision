@@ -1,1 +1,1 @@
-sudo docker build . -t docker.rescuer.inov.pt/robust_vision:latest
+sudo docker build . -t pdrak/robust_vision:latest

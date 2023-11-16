@@ -1,0 +1,20 @@
+   MainThread:09:59:23.582 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S echo "VALID PASSWORD"
+   MainThread:09:59:23.592 util.py                                   304 DEBUG    | Receive response --> VALID PASSWORD
+
+   MainThread:09:59:23.593 util.py                                   296 DEBUG    | Send cmd --> nmcli --version
+   MainThread:09:59:23.598 util.py                                   304 DEBUG    | Receive response --> nmcli tool, version 1.22.10
+
+   MainThread:09:59:23.599 util.py                                   296 DEBUG    | Send cmd --> echo "********" | sudo -S nmcli dev
+   MainThread:09:59:23.618 util.py                                   304 DEBUG    | Receive response --> DEVICE           TYPE      STATE         CONNECTION         
+enp0s31f6        ethernet  connected     Wired connection 1 
+docker0          bridge    connected     docker0            
+wlx08beac30bb38  wifi      connected     WLAN-ITI2          
+wlx38a38c200b6c  wifi      disconnected  --                 
+lo               loopback  unmanaged     --                 
+
+   MainThread:09:59:23.618 wireless.py                                70 DEBUG    | Wifi setup. Using [Wireless] driver::[wlx08beac30bb38] interface
+         data:09:59:23.622 bleak_wrapper.py                          151 INFO     | Scanning for GoPro [A-Z0-9]{4} bluetooth devices...
+   MainThread:09:59:28.853 client.py                                  84 WARNING  | Failed to find a device in 5 seconds. Retrying #1
+         data:09:59:28.859 bleak_wrapper.py                          151 INFO     | Scanning for GoPro [A-Z0-9]{4} bluetooth devices...
+   MainThread:09:59:33.888 client.py                                  84 WARNING  | Failed to find a device in 5 seconds. Retrying #2
+         data:09:59:33.894 bleak_wrapper.py                          151 INFO     | Scanning for GoPro [A-Z0-9]{4} bluetooth devices...
