@@ -314,7 +314,7 @@ if __name__ == "__main__":
     client = mqtt.Client('fromtool-sense-vision')
     
     ####FOR DELETE JUST FOR DEBUGGING
-    os.environ['ip']='127.0.0.1'
+    #os.environ['ip']='127.0.0.1'
     ####
 
     client.connect(os.environ['ip'])
